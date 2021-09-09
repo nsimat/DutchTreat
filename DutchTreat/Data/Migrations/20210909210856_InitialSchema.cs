@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DutchTreat.Migrations
+namespace DutchTreat.Data.Migrations
 {
     public partial class InitialSchema : Migration
     {

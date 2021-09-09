@@ -1,7 +1,9 @@
+using DutchTreat.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,28 @@ namespace DutchTreat
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            if(args.Length == 1 && args[0].ToLower() == "/seed")
+            {
+                Runseeding(host);
+            }
+            else
+            {
+                host.Run();
+            }            
+        }
+
+        private static void Runseeding(IHost host)
+        {
+            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+
+            using(var scope = scopeFactory.CreateScope())
+            {
+                var seeder = scope.ServiceProvider.GetService<DutchDataSeeder>();
+                seeder.SeedData();
+            }
+            
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

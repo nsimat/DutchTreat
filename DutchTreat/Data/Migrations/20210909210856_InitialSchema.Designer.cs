@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DutchTreat.Migrations
+namespace DutchTreat.Data.Migrations
 {
     [DbContext(typeof(DutchTreatDbContext))]
-    [Migration("20210908233326_InitialSchema")]
+    [Migration("20210909210856_InitialSchema")]
     partial class InitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

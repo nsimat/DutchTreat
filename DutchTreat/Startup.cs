@@ -31,9 +31,12 @@ namespace DutchTreat
                 options.UseSqlServer(Configuration["ConnectionStrings:DutchTreatCtxDb"])
             );
 
+            services.AddTransient<DutchDataSeeder>();
+
             services.AddTransient<IMailService, NullMailService>();
 
             services.AddMvc();
+            
 
             //services.AddControllersWithViews().AddRazorRuntimeCompilation();
 

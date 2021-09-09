@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DutchTreat.Migrations
+namespace DutchTreat.Data.Migrations
 {
     [DbContext(typeof(DutchTreatDbContext))]
     partial class DutchTreatDbContextModelSnapshot : ModelSnapshot
