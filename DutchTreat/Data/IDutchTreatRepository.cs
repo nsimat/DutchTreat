@@ -6,7 +6,11 @@ namespace DutchTreat.Data
     public interface IDutchTreatRepository
     {
         IEnumerable<Product> GetAllProducts();
-        IEnumerable<Product> GetProductsByCategory(string category);
+        IEnumerable<Product> GetProductsByCategory(string category);        
+
+        IEnumerable<Order> GetAllOrders();
+        Order GetOrderById(int id);
+
         bool Save();
     }
 }

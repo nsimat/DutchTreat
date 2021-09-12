@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,9 @@ namespace DutchTreat
 
             services.AddTransient<IMailService, NullMailService>();
 
-            services.AddMvc();
+            services.AddMvc().AddNewtonsoftJson(options =>             
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore                
+            );
             
 
             //services.AddControllersWithViews().AddRazorRuntimeCompilation();
