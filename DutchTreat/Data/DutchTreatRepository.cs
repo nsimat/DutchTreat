@@ -20,11 +20,16 @@ namespace DutchTreat.Data
             this.logger = logger;
         }
 
+        public void AddEntity(object model)
+        {
+            ctx.Add(model);
+        }
+
         public IEnumerable<Order> GetAllOrders()
         {
             return ctx.Orders
                       .Include(o => o.Items)
-                      .ThenInclude(i => i.Product)
+                      .ThenInclude(oi => oi.Product)
                       .ToList();
         }
 
@@ -77,11 +82,11 @@ namespace DutchTreat.Data
             
         }
 
-        public bool Save()
+        public bool SaveAll()
         {
             try
             {
-                logger.LogInformation("Save was called.");
+                logger.LogInformation("SaveAll was called.");
                 return ctx.SaveChanges() > 0;
             }
             catch (Exception ex)
