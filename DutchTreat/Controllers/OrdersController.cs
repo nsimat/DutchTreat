@@ -17,13 +17,13 @@ namespace DutchTreat.Controllers
     [Produces("application/json")]
     public class OrdersController : Controller
     {
-        private readonly IDutchTreatRepository repo;
+        private readonly IDutchTreatRepository repository;
         private readonly ILogger logger;
         private readonly IMapper mapper;
 
-        public OrdersController(IDutchTreatRepository repo, ILogger<OrdersController> logger, IMapper mapper)
+        public OrdersController(IDutchTreatRepository repository, ILogger<OrdersController> logger, IMapper mapper)
         {
-            this.repo = repo;
+            this.repository = repository;
             this.logger = logger;
             this.mapper = mapper;
         }
@@ -34,7 +34,7 @@ namespace DutchTreat.Controllers
             try
             {
                 logger.LogInformation("GetAll was called for orders in OrdersController.");
-                var results = repo.GetAllOrders(includeItems);
+                var results = repository.GetAllOrders(includeItems);
                 return Ok(mapper.Map<IEnumerable<OrderViewModel>>(results));
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace DutchTreat.Controllers
             {
                 logger.LogInformation("Get was called in OrdersController.");
 
-                var order = repo.GetOrderById(id);
+                var order = repository.GetOrderById(id);
                 if (order != null) return Ok(mapper.Map<Order, OrderViewModel>(order));
                 else return NotFound();
             }
@@ -77,8 +77,8 @@ namespace DutchTreat.Controllers
                         newOrder.OrderDate = DateTime.Now;
                     }
 
-                    repo.AddEntity(newOrder);
-                    if (repo.SaveAll())
+                    repository.AddEntity(newOrder);
+                    if (repository.SaveAll())
                     {
                         return Created($"/api/orders/{newOrder.OrderId}", mapper.Map<Order, OrderViewModel>(newOrder));
                     }

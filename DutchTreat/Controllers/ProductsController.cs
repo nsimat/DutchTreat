@@ -15,12 +15,12 @@ namespace DutchTreat.Controllers
     [Produces("application/json")]
     public class ProductsController : Controller
     {
-        private readonly IDutchTreatRepository repo;
+        private readonly IDutchTreatRepository repository;
         private readonly ILogger<ProductsController> logger;
 
-        public ProductsController(IDutchTreatRepository repo, ILogger<ProductsController> logger)
+        public ProductsController(IDutchTreatRepository repository, ILogger<ProductsController> logger)
         {
-            this.repo = repo;
+            this.repository = repository;
             this.logger = logger;
         } 
         
@@ -32,7 +32,7 @@ namespace DutchTreat.Controllers
             try
             {
                 logger.LogInformation("GetAll was called for products.");
-                return Ok(repo.GetAllProducts());
+                return Ok(repository.GetAllProducts());
             }
             catch (Exception ex)
             {
