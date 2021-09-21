@@ -1,8 +1,10 @@
 using DutchTreat.Data;
+using DutchTreat.Data.Entities;
 using DutchTreat.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +34,13 @@ namespace DutchTreat
             services.AddDbContext<DutchTreatDbContext>(options =>            
                 options.UseSqlServer(Configuration["ConnectionStrings:DutchTreatCtxDb"])
             );
+
+            services.AddIdentity<StoreUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<DutchTreatDbContext>();
+
+            services.AddDbContext<DutchTreatDbContext>();
 
             services.AddTransient<DutchDataSeeder>();
 
@@ -65,6 +74,9 @@ namespace DutchTreat
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(cfg =>
             {

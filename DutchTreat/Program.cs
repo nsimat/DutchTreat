@@ -19,7 +19,7 @@ namespace DutchTreat
 
             if(args.Length == 1 && args[0].ToLower() == "/seed")
             {
-                Runseeding(host);
+                RunSeeding(host);
             }
             else
             {
@@ -27,14 +27,14 @@ namespace DutchTreat
             }            
         }
 
-        private static void Runseeding(IHost host)
+        private static void RunSeeding(IHost host)
         {
             var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
 
             using(var scope = scopeFactory.CreateScope())
             {
                 var seeder = scope.ServiceProvider.GetService<DutchDataSeeder>();
-                seeder.SeedData();
+                seeder.SeedDataAsync().Wait();
             }
             
         }

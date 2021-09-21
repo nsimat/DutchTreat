@@ -16,5 +16,6 @@ namespace DutchTreat.ViewModels
         public string OrderNumber { get; set; }
 
         public ICollection<OrderItemViewModel> Items { get; set; }
+
     }
 }

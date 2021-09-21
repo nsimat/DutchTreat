@@ -1,5 +1,6 @@
 ﻿using DutchTreat.Data.Entities;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,16 +14,37 @@ namespace DutchTreat.Data
     {
         private readonly DutchTreatDbContext context;
         private readonly IWebHostEnvironment env;
+        private readonly UserManager<StoreUser> userManager;
 
-        public DutchDataSeeder(DutchTreatDbContext context, IWebHostEnvironment env)
+        public DutchDataSeeder(DutchTreatDbContext context, IWebHostEnvironment env, UserManager<StoreUser> userManager)
         {
             this.context = context;
             this.env = env;
+            this.userManager = userManager;
         }
 
-        public void SeedData()
+        public async Task SeedDataAsync()
         {
             context.Database.EnsureCreated();
+
+            StoreUser user = await userManager.FindByEmailAsync("brian.kapesa@dutchtreat.com");
+
+            if(user == null)
+            {
+                user = new StoreUser()
+                {
+                    FirstName = "Brian",
+                    LastName = "Kapesa",
+                    Email = "brian.kapesa@dutchtreat.com",
+                    UserName = "brian.kapesa@dutchtreat.com"
+                };
+
+                var result = await userManager.CreateAsync(user, "P@ssw0rd!");
+                if(result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create new user in the seeder");
+                }
+            }
 
             if (!context.Products.Any())
             {
@@ -33,11 +55,13 @@ namespace DutchTreat.Data
 
                 context.Products.AddRange(products);
 
-                var order = new Order
+                var order = context.Orders.Where(o => o.OrderId == 1).FirstOrDefault();
+
+                if(order != null)
                 {
-                    OrderDate = DateTime.Today,
-                    OrderNumber = "10000",
-                    Items = new List<OrderItem>()
+                    order.User = user;
+
+                    order.Items = new List<OrderItem>()
                     {
                         new OrderItem()
                         {
@@ -45,10 +69,25 @@ namespace DutchTreat.Data
                             Quantity = 5,
                             UnitPrice = products.First().Price
                         }
-                    }
-                };
+                    };
+                }
 
-                context.Orders.Add(order);
+                //var order = new Order
+                //{
+                //    OrderDate = DateTime.Today,
+                //    OrderNumber = "10000",
+                //    Items = new List<OrderItem>()
+                //    {
+                //        new OrderItem()
+                //        {
+                //            Product = products.First(),
+                //            Quantity = 5,
+                //            UnitPrice = products.First().Price
+                //        }
+                //    }
+                //};
+
+                //context.Orders.Add(order);
 
                 context.SaveChanges();
             }
