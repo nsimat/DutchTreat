@@ -9,9 +9,9 @@ namespace DutchTreat.ViewModels
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Username cannot be empty!")]
         public string Username { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Password cannot be empty!")]
         public string Password { get; set; }
         public bool RememberMe { get; set; }
     }
