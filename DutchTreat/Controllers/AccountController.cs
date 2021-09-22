@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DutchTreat.Data.Entities;
+using DutchTreat.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,10 +13,12 @@ namespace DutchTreat.Controllers
     public class AccountController : Controller
     {
         private readonly ILogger<AccountController> logger;
+        private readonly SignInManager<StoreUser> signInManager;
 
-        public AccountController(ILogger<AccountController> logger)
+        public AccountController(ILogger<AccountController> logger, SignInManager<StoreUser> signInManager)
         {
             this.logger = logger;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Login()
@@ -24,6 +29,38 @@ namespace DutchTreat.Controllers
             }
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LogIn(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+
+                if (result.Succeeded)
+                {
+                    if (Request.Query.Keys.Contains("ReturnUrl"))
+                    {
+                        return Redirect(Request.Query["ReturnUrl"].First());
+                    }
+                    else
+                    {
+                        RedirectToAction("Shop", "App");
+                    }
+
+                }
+            }
+
+            ModelState.AddModelError("", "Failed to login");
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LogOut()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "App");
         }
     }
 }
