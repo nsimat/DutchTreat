@@ -2,6 +2,8 @@
 using DutchTreat.Data;
 using DutchTreat.Data.Entities;
 using DutchTreat.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,9 +14,10 @@ using System.Threading.Tasks;
 
 namespace DutchTreat.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
-    [Produces("application/json")]
+    [Produces("application/json")]    
     public class OrdersController : Controller
     {
         private readonly IDutchTreatRepository repository;
@@ -34,7 +37,10 @@ namespace DutchTreat.Controllers
             try
             {
                 logger.LogInformation("GetAll was called for orders in OrdersController.");
-                var results = repository.GetAllOrders(includeItems);
+
+                var username = User.Identity.Name;
+
+                var results = repository.GetAllOrdersByUser(username, includeItems);
                 return Ok(mapper.Map<IEnumerable<OrderViewModel>>(results));
             }
             catch (Exception ex)
@@ -51,7 +57,7 @@ namespace DutchTreat.Controllers
             {
                 logger.LogInformation("Get was called in OrdersController.");
 
-                var order = repository.GetOrderById(id);
+                var order = repository.GetOrderById(User.Identity.Name, id);
                 if (order != null) return Ok(mapper.Map<Order, OrderViewModel>(order));
                 else return NotFound();
             }

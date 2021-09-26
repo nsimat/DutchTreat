@@ -25,6 +25,7 @@ namespace DutchTreat.Data
 
         public async Task SeedDataAsync()
         {
+            //To ensure that the database exists
             context.Database.EnsureCreated();
 
             StoreUser user = await userManager.FindByEmailAsync("brian.kapesa@dutchtreat.com");
@@ -70,24 +71,7 @@ namespace DutchTreat.Data
                             UnitPrice = products.First().Price
                         }
                     };
-                }
-
-                //var order = new Order
-                //{
-                //    OrderDate = DateTime.Today,
-                //    OrderNumber = "10000",
-                //    Items = new List<OrderItem>()
-                //    {
-                //        new OrderItem()
-                //        {
-                //            Product = products.First(),
-                //            Quantity = 5,
-                //            UnitPrice = products.First().Price
-                //        }
-                //    }
-                //};
-
-                //context.Orders.Add(order);
+                }                
 
                 context.SaveChanges();
             }
